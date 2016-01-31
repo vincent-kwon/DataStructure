@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://tizen.org/ns/packages" api-version="2.3" package="com.vincetech15" version="1.0.0">
+	<profile name="mobile" />
+	<ui-application appid="com.vincetech15" exec="vincetech15" type="capp" multiple="false" taskmanage="true" nodisplay="false">
+		<icon>vincetech15.png</icon>
+		<label>vincetech15</label>
+	</ui-application>
+</manifest>

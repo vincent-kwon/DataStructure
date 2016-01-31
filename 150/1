@@ -1,0 +1,39 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  1_2_reverse_string.cpp
+ *
+ *    Description:  
+ *
+ *        Version:  1.0
+ *        Created:  04/02/2015 09:25:57 AM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  Hobum (Vincent) Kwon (mn), hobum.kwon@gmail.com
+ *        Company:  Samsung Electornics
+ *
+ * =====================================================================================
+ */
+
+#include <iostream>
+
+using namespace std;
+
+void reverse(char *str) {
+  //search for \0
+  char* end = str;
+  int strlen_value = 0;
+
+  while (*end != '\0') {
+    end++;
+    strlen_value++;
+  }
+  cout<<"size:"<<strlen_value<<endl;
+  
+}
+
+int main() {
+  reverse("HELLO");
+  return EXIT_SUCCESS;
+}

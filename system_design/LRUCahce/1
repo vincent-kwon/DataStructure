@@ -1,0 +1,274 @@
+LRU.cc:31:33: error: expected ‘(’ before ‘visibility’
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                 ^
+LRU.cc:50:8: note: in expansion of macro ‘BASE_EXPORT’
+ struct BASE_EXPORT Element {
+        ^
+LRU.cc:31:55: error: expected ‘)’ before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:50:8: note: in expansion of macro ‘BASE_EXPORT’
+ struct BASE_EXPORT Element {
+        ^
+LRU.cc:31:55: error: expected identifier before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:50:8: note: in expansion of macro ‘BASE_EXPORT’
+ struct BASE_EXPORT Element {
+        ^
+LRU.cc:50:20: error: ‘Element’ does not name a type
+ struct BASE_EXPORT Element {
+                    ^
+LRU.cc:31:33: error: expected ‘(’ before ‘visibility’
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                 ^
+LRU.cc:62:7: note: in expansion of macro ‘BASE_EXPORT’
+ class BASE_EXPORT LRUCache 
+       ^
+LRU.cc:31:55: error: expected ‘)’ before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:62:7: note: in expansion of macro ‘BASE_EXPORT’
+ class BASE_EXPORT LRUCache 
+       ^
+LRU.cc:31:55: error: expected identifier before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:62:7: note: in expansion of macro ‘BASE_EXPORT’
+ class BASE_EXPORT LRUCache 
+       ^
+LRU.cc:62:19: error: ‘LRUCache’ does not name a type
+ class BASE_EXPORT LRUCache 
+                   ^
+LRU.cc:90:1: error: ‘LRUCache’ does not name a type
+ LRUCache::~LRUCache() 
+ ^
+LRU.cc:95:5: error: ‘LRUCache’ has not been declared
+ int LRUCache::Get(int key) 
+     ^
+LRU.cc: In function ‘int vc::algorithm::Get(int)’:
+LRU.cc:97:23: error: ‘sz_’ was not declared in this scope
+   for (int i = 0; i < sz_ ; i++) 
+                       ^
+LRU.cc:99:9: error: ‘arr_’ was not declared in this scope
+     if (arr_[i].key == key) 
+         ^
+LRU.cc:102:15: error: ‘Adjust’ was not declared in this scope
+       Adjust(i);
+               ^
+LRU.cc: At global scope:
+LRU.cc:108:6: error: ‘LRUCache’ has not been declared
+ void LRUCache::Set(int key, int value) 
+      ^
+LRU.cc: In function ‘void vc::algorithm::Set(int, int)’:
+LRU.cc:110:24: error: ‘sz_’ was not declared in this scope
+   for (int i = 0 ; i < sz_; i++) 
+                        ^
+LRU.cc:112:9: error: ‘arr_’ was not declared in this scope
+     if (arr_[i].key == key) 
+         ^
+LRU.cc:115:15: error: ‘Adjust’ was not declared in this scope
+       Adjust(i); // existing element
+               ^
+LRU.cc:120:7: error: ‘sz_’ was not declared in this scope
+   if (sz_ == capacity_) 
+       ^
+LRU.cc:120:14: error: ‘capacity_’ was not declared in this scope
+   if (sz_ == capacity_) 
+              ^
+LRU.cc:124:7: error: ‘arr_’ was not declared in this scope
+       arr_[i] = arr_[i+1];
+       ^
+LRU.cc:127:4: error: ‘arr_’ was not declared in this scope
+    arr_[sz_-1].key = key;
+    ^
+LRU.cc:131:5: error: ‘arr_’ was not declared in this scope
+     arr_[sz_].key = key;
+     ^
+LRU.cc: At global scope:
+LRU.cc:137:6: error: ‘LRUCache’ has not been declared
+ void LRUCache::Adjust(int index) 
+      ^
+LRU.cc: In function ‘void vc::algorithm::Adjust(int)’:
+LRU.cc:139:16: error: ‘sz_’ was not declared in this scope
+   if (index == sz_ - 1) // already at the recently used 
+                ^
+LRU.cc:142:3: error: ‘Element’ was not declared in this scope
+   Element cur = arr_[index];
+   ^
+LRU.cc:142:11: error: expected ‘;’ before ‘cur’
+   Element cur = arr_[index];
+           ^
+LRU.cc:143:27: error: ‘sz_’ was not declared in this scope
+   for (int i = index; i < sz_-1; i++) 
+                           ^
+LRU.cc:145:5: error: ‘arr_’ was not declared in this scope
+     arr_[i] = arr_[i+1];
+     ^
+LRU.cc:147:3: error: ‘arr_’ was not declared in this scope
+   arr_[sz_-1] = cur;
+   ^
+LRU.cc:147:8: error: ‘sz_’ was not declared in this scope
+   arr_[sz_-1] = cur;
+        ^
+LRU.cc:147:17: error: ‘cur’ was not declared in this scope
+   arr_[sz_-1] = cur;
+                 ^
+LRU.cc: At global scope:
+LRU.cc:150:6: error: ‘LRUCache’ has not been declared
+ void LRUCache::Print() {
+      ^
+LRU.cc: In function ‘void vc::algorithm::Print()’:
+LRU.cc:151:23: error: ‘sz_’ was not declared in this scope
+   for (int i = 0; i < sz_ ; i++) 
+                       ^
+LRU.cc:153:13: error: ‘arr_’ was not declared in this scope
+     cout << arr_[i].key << ":" << arr_[i].value << endl;
+             ^
+LRU.cc: In function ‘int main()’:
+LRU.cc:163:3: error: ‘LRUCache’ was not declared in this scope
+   LRUCache lru(5);
+   ^
+LRU.cc:163:12: error: expected ‘;’ before ‘lru’
+   LRUCache lru(5);
+            ^
+LRU.cc:164:3: error: ‘lru’ was not declared in this scope
+   lru.Set(1, 100);
+   ^
+LRU.cc:31:33: error: expected ‘(’ before ‘visibility’
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                 ^
+LRU.cc:50:8: note: in expansion of macro ‘BASE_EXPORT’
+ struct BASE_EXPORT Element {
+        ^
+LRU.cc:31:55: error: expected ‘)’ before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:50:8: note: in expansion of macro ‘BASE_EXPORT’
+ struct BASE_EXPORT Element {
+        ^
+LRU.cc:31:55: error: expected identifier before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:50:8: note: in expansion of macro ‘BASE_EXPORT’
+ struct BASE_EXPORT Element {
+        ^
+LRU.cc:50:20: error: ‘Element’ does not name a type
+ struct BASE_EXPORT Element {
+                    ^
+LRU.cc:31:33: error: expected ‘(’ before ‘visibility’
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                 ^
+LRU.cc:62:7: note: in expansion of macro ‘BASE_EXPORT’
+ class BASE_EXPORT LRUCache 
+       ^
+LRU.cc:31:55: error: expected ‘)’ before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:62:7: note: in expansion of macro ‘BASE_EXPORT’
+ class BASE_EXPORT LRUCache 
+       ^
+LRU.cc:31:55: error: expected identifier before ‘;’ token
+ #define BASE_EXPORT __attribute(visibility("default"));
+                                                       ^
+LRU.cc:62:7: note: in expansion of macro ‘BASE_EXPORT’
+ class BASE_EXPORT LRUCache 
+       ^
+LRU.cc:62:19: error: ‘LRUCache’ does not name a type
+ class BASE_EXPORT LRUCache 
+                   ^
+LRU.cc:90:1: error: ‘LRUCache’ does not name a type
+ LRUCache::~LRUCache() 
+ ^
+LRU.cc:95:5: error: ‘LRUCache’ has not been declared
+ int LRUCache::Get(int key) 
+     ^
+LRU.cc: In function ‘int vc::algorithm::Get(int)’:
+LRU.cc:97:23: error: ‘sz_’ was not declared in this scope
+   for (int i = 0; i < sz_ ; i++) 
+                       ^
+LRU.cc:99:9: error: ‘arr_’ was not declared in this scope
+     if (arr_[i].key == key) 
+         ^
+LRU.cc:102:15: error: ‘Adjust’ was not declared in this scope
+       Adjust(i);
+               ^
+LRU.cc: At global scope:
+LRU.cc:108:6: error: ‘LRUCache’ has not been declared
+ void LRUCache::Set(int key, int value) 
+      ^
+LRU.cc: In function ‘void vc::algorithm::Set(int, int)’:
+LRU.cc:110:24: error: ‘sz_’ was not declared in this scope
+   for (int i = 0 ; i < sz_; i++) 
+                        ^
+LRU.cc:112:9: error: ‘arr_’ was not declared in this scope
+     if (arr_[i].key == key) 
+         ^
+LRU.cc:115:15: error: ‘Adjust’ was not declared in this scope
+       Adjust(i); // existing element
+               ^
+LRU.cc:120:7: error: ‘sz_’ was not declared in this scope
+   if (sz_ == capacity_) 
+       ^
+LRU.cc:120:14: error: ‘capacity_’ was not declared in this scope
+   if (sz_ == capacity_) 
+              ^
+LRU.cc:124:7: error: ‘arr_’ was not declared in this scope
+       arr_[i] = arr_[i+1];
+       ^
+LRU.cc:127:4: error: ‘arr_’ was not declared in this scope
+    arr_[sz_-1].key = key;
+    ^
+LRU.cc:131:5: error: ‘arr_’ was not declared in this scope
+     arr_[sz_].key = key;
+     ^
+LRU.cc: At global scope:
+LRU.cc:137:6: error: ‘LRUCache’ has not been declared
+ void LRUCache::Adjust(int index) 
+      ^
+LRU.cc: In function ‘void vc::algorithm::Adjust(int)’:
+LRU.cc:139:16: error: ‘sz_’ was not declared in this scope
+   if (index == sz_ - 1) // already at the recently used 
+                ^
+LRU.cc:142:3: error: ‘Element’ was not declared in this scope
+   Element cur = arr_[index];
+   ^
+LRU.cc:142:11: error: expected ‘;’ before ‘cur’
+   Element cur = arr_[index];
+           ^
+LRU.cc:143:27: error: ‘sz_’ was not declared in this scope
+   for (int i = index; i < sz_-1; i++) 
+                           ^
+LRU.cc:145:5: error: ‘arr_’ was not declared in this scope
+     arr_[i] = arr_[i+1];
+     ^
+LRU.cc:147:3: error: ‘arr_’ was not declared in this scope
+   arr_[sz_-1] = cur;
+   ^
+LRU.cc:147:8: error: ‘sz_’ was not declared in this scope
+   arr_[sz_-1] = cur;
+        ^
+LRU.cc:147:17: error: ‘cur’ was not declared in this scope
+   arr_[sz_-1] = cur;
+                 ^
+LRU.cc: At global scope:
+LRU.cc:150:6: error: ‘LRUCache’ has not been declared
+ void LRUCache::Print() {
+      ^
+LRU.cc: In function ‘void vc::algorithm::Print()’:
+LRU.cc:151:23: error: ‘sz_’ was not declared in this scope
+   for (int i = 0; i < sz_ ; i++) 
+                       ^
+LRU.cc:153:13: error: ‘arr_’ was not declared in this scope
+     cout << arr_[i].key << ":" << arr_[i].value << endl;
+             ^
+LRU.cc: In function ‘int main()’:
+LRU.cc:163:3: error: ‘LRUCache’ was not declared in this scope
+   LRUCache lru(5);
+   ^
+LRU.cc:163:12: error: expected ‘;’ before ‘lru’
+   LRUCache lru(5);
+            ^
+LRU.cc:164:3: error: ‘lru’ was not declared in this scope
+   lru.Set(1, 100);
+   ^
