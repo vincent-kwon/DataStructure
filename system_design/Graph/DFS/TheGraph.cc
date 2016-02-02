@@ -2,26 +2,30 @@
 #include <limits.h>
 #include <algorithm>
 #include <vector>
+#include <queue>
 
 using namespace std;
 
-class DFSGraph {
+class TheGraph {
  public:
   typedef enum {
     DFS, BSF
   } WAY;
-  DFSGraph(int s) : size_(s) {
+
+  typedef enum {
+    NO_VISIT = 0,
+    VISITING = 1,
+    VISITED = 2
+  } NODE_COLOR;
+
+  TheGraph(int s) : size_(s) {
     eArray = new Edge* [s]; //new in constructor good or bad?
     pathMinArray = new int [s];
-    isVisitedArray = new bool [s];
-
-    for (int i = 0; i < s; i++) {
-      eArray[i] = NULL;
-      pathMinArray[i] = INT_MAX;    
-      isVisitedArray[i] = false;
-    }
+    isVisitedArray = new int [s];
+    prepareSearch();
   };
-  ~DFSGraph() {
+
+  ~TheGraph() {
     for (int i = 0 ; i < size_; i++) {
       Edge* tmp = eArray[i];
       Edge* toDel;
@@ -46,8 +50,10 @@ class DFSGraph {
       delete pathMinArray;
     }
   };
-  DFSGraph(const DFSGraph& d) = delete;
-  void operator=(DFSGraph& d) = delete;
+  
+  TheGraph(const TheGraph& d) = delete;
+  
+  void operator=(TheGraph& d) = delete;
 
   void addEdge(int s, int e, int w) {
     Edge* newEdge = new Edge();
@@ -72,6 +78,14 @@ class DFSGraph {
     }
   };
   
+  void prepareSearch() {
+    for (int i = 0; i < size_; i++) {
+      eArray[i] = NULL;
+      pathMinArray[i] = INT_MAX;    
+      isVisitedArray[i] = NO_VISIT;
+    }
+  };
+
   void printEdges(int i) {
     Edge* tmp = eArray[i];
 
@@ -89,54 +103,29 @@ class DFSGraph {
     }
   }
   
-  int findShortest(int start, int end, DFSGraph::WAY w, int accum, vector<int>& path) {
+  int findShortest(int start, int end, TheGraph::WAY w, int accum, vector<int>& path) {
+    int min = INT_MAX;
     if (w == DFS) {
       Edge* tmp = eArray[start];
-      int min = INT_MAX;
 
-      if (isVisitedArray[start] == true) { 
-        if (pathMinArray[start] != INT_MAX) {
-          path.push_back(start);
-          cout << "Found : " << accum + pathMinArray[start] << "," << pathMinArray[start] << endl;
-          printVector(path);
-          cout << "Got " << endl;
-          path.pop_back();
-          return accum + pathMinArray[start];
-        } 
-        else {
-          return INT_MAX;
-        }
+      if (isVisitedArray[start] == VISITED) { 
+        return accum + pathMinArray[start];
       }
       
       vector<int>::iterator itor = find(path.begin(), path.end(), start);
       if (itor != path.end()) {
-        cout << "cycle " << endl;
-        path.push_back(start);
-        printVector(path);
-        path.pop_back();
-        isVisitedArray[start] = true;
-        pathMinArray[start] = INT_MAX;
-        return min;
+        return INT_MAX;
       }
       else {
         path.push_back(start); 
       }
       
+      isVisitedArray[start] = VISITING;
+
       while (tmp) {
         int val;
-        //cout << start << " to " << tmp->target << " " << accum << endl;
-        if (start == tmp->target) {
-          tmp = tmp->next;
-          continue;
-        }
-        else if (tmp->target == end) {
+        if (tmp->target == end) {
           val = accum + tmp->weight;
-          cout << "found the target " << end << ": " << val << endl;
-          if (min > val) { 
-            path.push_back(tmp->target);
-            printVector(path);
-            path.pop_back();
-          }
         } 
         else {
           val = findShortest(tmp->target, end, w, accum + tmp->weight, path);
@@ -147,7 +136,7 @@ class DFSGraph {
 
       path.pop_back();
 
-      isVisitedArray[start] = true;
+      isVisitedArray[start] = VISITING;
       pathMinArray[start] = min - accum;
 
       if (min != INT_MAX) {
@@ -157,8 +146,40 @@ class DFSGraph {
         return INT_MAX;
       }
     }
-    else {
-      return 0;
+    else { // Kevin Bacon BFS
+      /*
+       * 0. add queue
+       * 1. pop queue as much as size of queue
+       * 2. as poping add all its child to queue again unless it is target
+       * 3. if all poped (as size), increase size of connect 
+       */
+      queue<int> queue;
+      queue.push(start);
+      int count = -1;
+
+      while (!queue.empty()) {
+        int size = queue.size();
+        count++;
+        for (int i = 0; i < size; i++) {
+          int popedValue = queue.front();
+          queue.pop(); 
+          if (popedValue == end) {
+            return count;
+          } 
+          else {
+            if (isVisitedArray[popedValue] == NO_VISIT) {
+              isVisitedArray[popedValue] = VISITING;
+              Edge* tmp = eArray[popedValue];
+              while (tmp) {
+                queue.push(tmp->target);
+                tmp = tmp->next;
+              }
+              isVisitedArray[popedValue] = VISITED;
+            }
+          }
+        }
+      }      
+      return min;  
     }
   };
  protected:
@@ -169,7 +190,7 @@ class DFSGraph {
   };
   Edge** eArray; 
   int* pathMinArray; 
-  bool* isVisitedArray;
+  int* isVisitedArray;
 private: 
   int size_;
 };
@@ -180,7 +201,7 @@ int main() {
   int m[100][100];
 
   cin >> numNodes;
-  DFSGraph dfs(numNodes);
+  TheGraph dfs(numNodes);
 
   for (int i = 0; i < numNodes; i++) {
     for (int j = 0; j < numNodes; j++) {
@@ -190,7 +211,7 @@ int main() {
     }
   }
   vector<int> v;
-  int val = dfs.findShortest(0, numNodes-1, DFSGraph::DFS, 0, v);
+  int val = dfs.findShortest(0, numNodes-1, TheGraph::BSF/*TheGraph::DFS*/, 0, v);
   cout << "Final: " << val << endl;
   return 1;
 }
