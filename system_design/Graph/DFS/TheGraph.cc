@@ -9,7 +9,9 @@ using namespace std;
 class TheGraph {
  public:
   typedef enum {
-    DFS, BSF
+    DFS = 0, 
+    BSF = 1,
+    DIK = 2
   } WAY;
 
   typedef enum {
@@ -22,6 +24,8 @@ class TheGraph {
     eArray = new Edge* [s]; //new in constructor good or bad?
     pathMinArray = new int [s];
     isVisitedArray = new int [s];
+    prevEdgeArray = new int [s];
+    prevValueArray = new int [s];
     prepareSearch();
   };
 
@@ -48,6 +52,14 @@ class TheGraph {
  
     if (pathMinArray) {
       delete pathMinArray;
+    }
+ 
+    if (prevEdgeArray) {
+      delete prevEdgeArray;
+    }
+
+    if (prevValueArray) {
+      delete prevValueArray;
     }
   };
   
@@ -83,6 +95,7 @@ class TheGraph {
       eArray[i] = NULL;
       pathMinArray[i] = INT_MAX;    
       isVisitedArray[i] = NO_VISIT;
+      prevEdgeArray[i] = -1;
     }
   };
 
@@ -103,6 +116,41 @@ class TheGraph {
     }
   }
   
+  int getNextClosest(vector<int>& v, int* prev, int *value) {
+    int minDistance = INT_MAX;
+    int nextNum;
+
+    for (auto i : v) {
+      Edge* tmp = eArray[i];
+      while (tmp) {
+        if (isVisitedArray[tmp->target] == NO_VISIT && tmp->weight < minDistance) {
+          minDistance = tmp->weight;
+          *value = tmp->weight;
+          nextNum = tmp->target;
+          *prev = i;
+        }
+        tmp = tmp->next;
+      } 
+    }
+    return nextNum;
+  }
+
+  int backTrack(int start, int end) {
+    int accum = 0;
+    int next = end;
+    cout << "node: " << next <<  " " << accum << endl;
+    while (1) {
+      int prev = prevEdgeArray[next];
+      accum += prevValueArray[next];
+      cout << "node: " << prev << " " << accum << endl;
+      if (prev == start)
+        return accum;
+      else
+        next = prev;
+    }
+    return -1; // if can't back track;
+  }
+
   int findShortest(int start, int end, TheGraph::WAY w, int accum, vector<int>& path) {
     int min = INT_MAX;
     if (w == DFS) {
@@ -146,7 +194,7 @@ class TheGraph {
         return INT_MAX;
       }
     }
-    else { // Kevin Bacon BFS
+    else if (w == BSF) { // Kevin Bacon BFS
       /*
        * 0. add queue
        * 1. pop queue as much as size of queue
@@ -178,8 +226,38 @@ class TheGraph {
             }
           }
         }
-      }      
+      } 
       return min;  
+    }
+    else if (w == DIK) {
+      vector<int> v;
+      int accum = 0;
+      isVisitedArray[start] = VISITED;
+      prevEdgeArray[start] = -1;
+      prevValueArray[start] = 0; 
+      v.push_back(start);
+
+      for (int i = 0; i < size_ ; i++) {
+        int prev; 
+        int value;
+        int nextSmall = getNextClosest(v,&prev, &value);
+        // cout << nextSmall << ", from " << prev << " by " << value << endl;
+        if (nextSmall == end) {
+          // go back to the start and return accum of weight
+          //cout << "found target ... " << endl;
+          prevEdgeArray[nextSmall] = prev;
+          prevValueArray[nextSmall] = value;
+          accum = backTrack(start, nextSmall);
+          return accum;
+        }
+        else {
+          isVisitedArray[nextSmall] = VISITED;
+          prevEdgeArray[nextSmall] = prev;
+          prevValueArray[nextSmall] = value;
+          v.push_back(nextSmall);
+        }
+      }
+      return min; // could not find
     }
   };
  protected:
@@ -191,6 +269,8 @@ class TheGraph {
   Edge** eArray; 
   int* pathMinArray; 
   int* isVisitedArray;
+  int* prevEdgeArray;
+  int* prevValueArray;
 private: 
   int size_;
 };
@@ -211,7 +291,7 @@ int main() {
     }
   }
   vector<int> v;
-  int val = dfs.findShortest(0, numNodes-1, TheGraph::BSF/*TheGraph::DFS*/, 0, v);
+  int val = dfs.findShortest(0, numNodes-1, TheGraph::DIK, 0, v);
   cout << "Final: " << val << endl;
   return 1;
 }
