@@ -135,9 +135,12 @@ class TheTree {
       queue< Node<T>* > queue;
       
       queue.push(start);
+      
+      int maxLevel = -1;
 
       while (!queue.empty()) {
         int s = queue.size();
+        maxLevel++;
 
         for (int i = 0 ; i < s ; i++)  {
           Node<T>* n = queue.front();
@@ -147,6 +150,8 @@ class TheTree {
           if (n->right) { queue.push(n->right); }     
         }
       } 
+
+      cout << "maxLevel (start from 0) : " << maxLevel << endl;
     }
     return 0;
   };
@@ -204,6 +209,7 @@ class TheTree {
  
   // 3. get common ancestor
   int getCommonAncestor(Node<T>* a, Node<T>* b) { 
+    
     return 0;
   };
 
