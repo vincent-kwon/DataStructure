@@ -90,6 +90,10 @@ class TheTree {
     }
   };
 
+  void deleteNode(Node<T>* n) {
+
+  };
+
   Node<T>* findNode(T value) {
     Node<T>* tmp = root;
     while (tmp) {
@@ -107,35 +111,93 @@ class TheTree {
 
   int traverse(Node<T>* start, TheTree::WAY w, TheTree::ORDER o) {
     int min = INT_MAX;
-    if (w == DFS) {
-      if (start) {
-        if (o == TheTree::PRE) {
-          cout << start->value << endl;
-        }
- 
-        traverse(start->left, w, o);
+    
+    if (!start) return 0;
 
-        if (o == TheTree::IN) {
-          cout << start->value << endl;
-        } 
-     
-        traverse(start->right, w, o);
-        if (o == TheTree::POST) {
-          cout << start->value << endl;
-        }
+    if (w == DFS) {
+      if (o == TheTree::PRE) {
+        cout << start->value << endl;
       }
-    }
-    else if (w == BFS) { 
+ 
+      traverse(start->left, w, o);
+
+      if (o == TheTree::IN) {
+        cout << start->value << endl;
+      } 
+     
+      traverse(start->right, w, o);
+      if (o == TheTree::POST) {
+        cout << start->value << endl;
+      }
+    } 
+    else if (w == BFS) {
+      queue< Node<T>* > queue;
+      
+      queue.push(start);
+
+      while (!queue.empty()) {
+        int s = queue.size();
+
+        for (int i = 0 ; i < s ; i++)  {
+          Node<T>* n = queue.front();
+          queue.pop();
+          cout << "visit: " << n->value << endl;
+          if (n->left) { queue.push(n->left); }
+          if (n->right) { queue.push(n->right); }     
+        }
+      } 
     }
     return 0;
   };
+  // 1. check balance
+  bool isBalanced() {
+   //if left and right diff is 1, balanced
 
+  };
+
+  // 2. check height
+  int getMaxHeight() {
+
+  };
+ 
+  // 3. get common ancestor
+  int getCommonAncestor(Node<T>* a, Node<T>* b) { 
+    return 0;
+  };
+
+  // 4. level print
+  void printSizeOfLevels() {
+
+  };
+
+  // 5. serial / deserial
+  string serialize() {
+    return;
+  };
+
+  void deserialize(string s) {
+  };
+
+  // 6. subtree, including equal 
+  bool isSubtree(TheTree& t) {
+    return true;
+  };
+
+  // 7. find closest num
+  Node<T>* findClosestNumber(T t) { //only for int
+    return NULL;
+  };
+
+  // 8. find consecutive num
+  void printConsecutive() {
+
+  };
+ 
   Node<T>* get_root() { return root; };
 
  private: 
   int size_;
 };
-
 
 int main() {
   int numNodes;
@@ -149,7 +211,7 @@ int main() {
       bst.addNode(m[i]);
   }
   vector<int> v;
-  int val = bst.traverse(bst.get_root(), TheTree<int>::DFS, static_cast<TheTree<int>::ORDER>(2));
+  int val = bst.traverse(bst.get_root(), TheTree<int>::BFS, static_cast<TheTree<int>::ORDER>(2));
   cout << "Final: " << val << endl;
   return 1;
 }
