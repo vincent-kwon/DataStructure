@@ -180,7 +180,26 @@ class TheTree {
 
   // 2. check height
   int getHeight(Node<T>* n) {
-    return 0;
+
+    assert(n);
+
+    if (n->left == NULL && n->right == NULL) return 1;
+
+    int l_h, r_h;
+
+    if (n->left) {
+      l_h = getHeight(n->left);
+    } else {
+      l_h = 0;
+    } 
+
+    if (n->right) {
+      r_h = getHeight(n->right);
+    } else {
+      r_h = 0;
+    }
+
+    return (l_h > r_h ? l_h + 1 : r_h + 1);
   };
  
   // 3. get common ancestor
@@ -237,6 +256,7 @@ int main() {
   int val = bst.traverse(bst.get_root(), TheTree<int>::BFS, static_cast<TheTree<int>::ORDER>(2));
   //cout << "Final: " << val << endl;
 
-  cout << "balanced? " << bst.getBalanceHeight(bst.get_root()) << endl; 
+  //cout << "balanced? " << bst.getBalanceHeight(bst.get_root()) << endl; 
+  cout << bst.getHeight(bst.get_root()) << endl;
   return 1;
 }
