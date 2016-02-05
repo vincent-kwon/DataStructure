@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits.h>
+#include <assert.h>
 #include <algorithm>
 #include <vector>
 #include <queue>
@@ -150,14 +151,36 @@ class TheTree {
     return 0;
   };
   // 1. check balance
-  bool isBalanced() {
-   //if left and right diff is 1, balanced
+  int getBalanceHeight(Node<T>* n) {
+    //if left and right diff is 1, balanced
+    assert(n);
 
+    // For leaf, height is 1
+    if (n->left == NULL && n->right == NULL)
+      return 1;
+ 
+    // For non-leaf, if not balanced -1, otherwise its height
+    int l_h, r_h;
+
+    if (n->left) {
+      l_h = getBalanceHeight(n->left);
+    } else l_h = 0;
+
+    if (n->right) {
+      r_h = getBalanceHeight(n->right);
+    } else r_h = 0;
+
+    if ((l_h != -1) && (r_h != -1) && (abs(l_h - r_h) <= 1)) {
+      return (l_h > r_h ? l_h+1 : r_h+1);
+    } 
+    else {
+      return -1;
+    }
   };
 
   // 2. check height
-  int getMaxHeight() {
-
+  int getHeight(Node<T>* n) {
+    return 0;
   };
  
   // 3. get common ancestor
@@ -212,6 +235,8 @@ int main() {
   }
   vector<int> v;
   int val = bst.traverse(bst.get_root(), TheTree<int>::BFS, static_cast<TheTree<int>::ORDER>(2));
-  cout << "Final: " << val << endl;
+  //cout << "Final: " << val << endl;
+
+  cout << "balanced? " << bst.getBalanceHeight(bst.get_root()) << endl; 
   return 1;
 }
