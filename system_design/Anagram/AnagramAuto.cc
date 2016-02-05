@@ -33,6 +33,11 @@ bool isAnagram(string s1, string s2) {
     else hm[c]++;
   }
 
+  auto itor = hm.begin();
+  for (itor; itor != hm.end(); ++itor) {
+    cout << itor->first << "," << itor->second << endl;
+  }
+
   for (int i = 0; i < s2.size(); i++) {
     char c = s2.at(i);
     auto itor = hm.find(c);
