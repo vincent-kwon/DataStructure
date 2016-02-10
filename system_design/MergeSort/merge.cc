@@ -23,9 +23,10 @@ using namespace std;
 void merge(int s, int e, int* a) {
   cout << "enter: " << s << "," << e << endl;
   if (s < e) {
-    int mid = s + (e-s+1)/2;
-    merge(s, mid, a);
-    merge(mid+1, e, a);
+    int midDiff = (e-s)/2;
+
+    merge(s, s+midDiff, a);
+    merge(s+midDiff+1, e, a);
   } else {
     return;
   }
