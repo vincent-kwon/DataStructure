@@ -1,0 +1,5 @@
+/tmp/ccRCtiJA.o: In function `Singleton::getInstance()':
+single.cc:(.text._ZN9Singleton11getInstanceEv[_ZN9Singleton11getInstanceEv]+0x8): undefined reference to `Singleton::instance'
+single.cc:(.text._ZN9Singleton11getInstanceEv[_ZN9Singleton11getInstanceEv]+0x28): undefined reference to `Singleton::instance'
+single.cc:(.text._ZN9Singleton11getInstanceEv[_ZN9Singleton11getInstanceEv]+0x2d): undefined reference to `Singleton::instance'
+collect2: error: ld returned 1 exit status
