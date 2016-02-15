@@ -4,8 +4,9 @@ using namespace std;
 
 class Singleton {
  private:
-  Singleton() { cout << "private constructor" << endl; };
-  Singleton(const Singleton& other) {};
+  Singleton() { cout << "private constructor" << endl; }; // private so that it can not be called
+  Singleton(const Singleton& other) {}; // copy constructor is private
+  Singleton& operator=(Singleton const&) {};
   ~Singleton() {};
   static Singleton* instance;
  public:
