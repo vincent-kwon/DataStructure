@@ -6,17 +6,20 @@ class Beverage {
  public:
   Beverage() { cout << "Beverage constructor" << endl; }; // private so that it can not be called
   Beverage(const Beverage& other) {}; // copy constructor is private
-  Beverage& operator=(const Beverage &) { };
+  //Beverage& operator=(const Beverage&) { };
   virtual ~Beverage() {};
   virtual double cost() { return 0; } ; 
   void print() { cout << "Hello" << endl; };
-  virtual void getDescription() {}; 
+  virtual string getDescription() = 0; 
  protected:
   string description;
 };
 
 class CondimentDecorator : public Beverage {
-  virtual string getDescription() = 0;
+ public:
+  string getDescription() {
+    return description;
+  };
 };
 
 class Espresso : public Beverage {
@@ -27,6 +30,10 @@ class Espresso : public Beverage {
 
   double cost() {
     return 1.99;
+  }
+ 
+  string getDescription() {
+    return "es" + description + ",";
   }
 };
 
@@ -56,7 +63,7 @@ public:
   };
 
   string getDescription() {
-    return beverage_->description + ", whip";
+    return beverage_->getDescription() + ", whip";
   };
 
   double cost() {
