@@ -16,7 +16,6 @@ using namespace std;
  * 
  */
 
-
 class FlyBehavior {
  public:
   virtual void fly() = 0;
@@ -28,7 +27,7 @@ class Duck {
   void common2() { cout << "[duck] common 2" << endl; };
   virtual void quack()   { cout << "[duck] quack" << endl;    };
   virtual void fly()     { fb->fly(); };
-  virtual void run() { cout << "[duck] fast runner " << endl; };
+  virtual void run() throw (const char*) { cout << "[duck] fast runner " << endl; };
  protected:
   FlyBehavior *fb;
 };
@@ -77,7 +76,7 @@ class DuckAdapter : public Duck {
   
   virtual void quack() { tk_.scream(); };
   virtual void fly() { tk_.fly(); };
-  virtual void run() throw (char*) {
+  virtual void run() throw (const char*) {
     throw "no run exception" ;
   };
   
@@ -104,10 +103,8 @@ int main() {
  ad.quack();
  try {
    ad.run();
- } catch (...) {
-   cout << "got " << endl;
-//   cout << s << endl;
+ } catch (const char* msg) {
+   cout << "got " << msg << endl;
  }
-
  return 1;
 }
