@@ -12,11 +12,16 @@ class Enumerator {
     cout << "enumerator" << endl;
   };
   
-  virtual void moveNext() = 0;
+  virtual void moveNext() 
+  {
+    current_++;
+  };
 
   virtual void* current() = 0;
  
  protected:
+  int index_;
+  int current_;
 };
 
 class MenuItem 
@@ -82,21 +87,26 @@ class PancakeEnumerator : public Enumerator {
 
  public:
 
-  PancakeEnumerator() 
+  PancakeEnumerator(MenuItem *menuItems, int index) 
   {
     cout << "enumerator" << endl;
-  };
-
-  virtual void moveNext() {
-    // move list one 
+    menuItems_ = menuItems;
+    index_ = index;
   };
 
   virtual void* current() {
-    // return current pointing list member
+    if (current_ < index_) 
+    {
+      //return (void*) (menuItems_ + current_);
+    }
+    else 
+    {
+      return nullptr;
+    }
   };
 
- private:
-
+ protected:
+  MenuItems* menuItems_;
 };
 
 class DinerEnumerator : public Enumerator {
@@ -111,13 +121,7 @@ class DinerEnumerator : public Enumerator {
     current_ = 0;
   };
 
-  virtual void moveNext() {
-    // move list one 
-    current_++;
-  };
-
   virtual void* current() {
-    // return current pointing list member;
     if (current_ < index_) 
     {
       return (void*) (menuItems_ + current_);
@@ -130,8 +134,6 @@ class DinerEnumerator : public Enumerator {
 
  protected:
   MenuItem *menuItems_;
-  int index_;
-  int current_;
  private:
 };
 
