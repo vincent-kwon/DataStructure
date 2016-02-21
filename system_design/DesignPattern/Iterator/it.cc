@@ -12,11 +12,13 @@ class Enumerator {
     cout << "enumerator" << endl;
   };
   
-  virtual Enumerator begin() = 0;
+  virtual void* begin() = 0;
 
-  virtual Enumerator end() = 0; 
+  virtual void* end() = 0; 
 
-  virtual Enumerator operator++(int i) = 0;
+  virtual void moveNext() = 0;
+
+  virtual void current() = 0;
  
  protected:
 };
@@ -80,9 +82,78 @@ class MenuItem
   double price_;
 };
 
+class PancakeEnumerator : public Enumerator {
+
+ public:
+
+  PancakeEnumerator() 
+  {
+    cout << "enumerator" << endl;
+  };
+  
+  virtual void* begin() {
+    // start point of array
+    return nullptr;
+  };
+
+  virtual void* end() {
+    // end point of array
+    return nullptr;
+  }; 
+
+  virtual void moveNext() {
+    // move list one 
+  };
+
+  virtual void current() {
+    // return current pointing list member
+  };
+
+ private:
+
+};
+
+class DinerEnumerator : public Enumerator {
+
+ public:
+
+  DinerEnumerator(MenuItem *menuItems, int index) 
+  {
+    cout << "enumerator" << endl;
+    menuItems_ = menuItems;
+    index_ = index;
+  };
+  
+  virtual void* begin() {
+    // start point of array
+    return (void*) &menuItems_[0];
+  };
+
+  virtual void* end() {
+    // end point of array
+    return nullptr;
+  }; 
+
+  virtual void moveNext() {
+    // move list one 
+  };
+
+  virtual void current() {
+    // return current pointing list member
+  };
+
+ protected:
+  MenuItem *menuItems_;
+  int index_;
+
+ private:
+};
+
 class PancakeHouseMenu 
 {
  public:
+  friend class PancakeEnumerator;
+
   PancakeHouseMenu() 
   {
     menuItems.push_back(MenuItem("K&", "scramble", true, 2.99));
@@ -93,10 +164,11 @@ class PancakeHouseMenu
   list<MenuItem> menuItems;
 };
 
-class DinerMenu
+class DinerMenu 
 {
  public:
   static const int MAX_ARRAY = 10; 
+  friend class DinerEmulator;
 
   DinerMenu() 
   {
@@ -121,6 +193,9 @@ class DinerMenu
     }
   };
 
+  Enumerator getEnumerator() {
+    return (new DinerEnumerator(&menuItems, menuIndex_));
+  }
  protected:
   MenuItem menuItems[MAX_ARRAY];
   int menuIndex_;
