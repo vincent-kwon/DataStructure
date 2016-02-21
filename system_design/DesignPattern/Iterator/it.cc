@@ -7,9 +7,9 @@ using namespace std;
 
 class Enumerator {
  public:
-  Enumerator() 
+  Enumerator(int i) 
   {
-    cout << "enumerator" << endl;
+    cout << "Abstract enumerator" << endl;
   };
   
   virtual void moveNext() 
@@ -20,8 +20,18 @@ class Enumerator {
   virtual void* current() = 0;
  
  protected:
-  int index_;
+  int size_;
   int current_;
+};
+
+class EnumeratorCreator {
+ public:
+  virtual Enumerator* begin() = 0;
+
+  virtual void* end()
+  {
+    return nullptr;
+  }
 };
 
 class MenuItem 
@@ -83,46 +93,22 @@ class MenuItem
   double price_;
 };
 
-class PancakeEnumerator : public Enumerator {
+class DinerEnumerator : public Enumerator 
+{
 
  public:
 
-  PancakeEnumerator(MenuItem *menuItems, int index) 
+  DinerEnumerator(MenuItem *menuItems, int size, int startIndex) : Enumerator(0)
   {
-    cout << "enumerator" << endl;
+    cout << "Dinner Enumerator" << endl;
     menuItems_ = menuItems;
-    index_ = index;
+    size_ = size;
+    current_ = startIndex;
   };
 
-  virtual void* current() {
-    if (current_ < index_) 
-    {
-      //return (void*) (menuItems_ + current_);
-    }
-    else 
-    {
-      return nullptr;
-    }
-  };
-
- protected:
-  MenuItems* menuItems_;
-};
-
-class DinerEnumerator : public Enumerator {
-
- public:
-
-  DinerEnumerator(MenuItem *menuItems, int index) 
+  virtual void* current() 
   {
-    cout << "enumerator" << endl;
-    menuItems_ = menuItems;
-    index_ = index;
-    current_ = 0;
-  };
-
-  virtual void* current() {
-    if (current_ < index_) 
+    if (current_ < size_) 
     {
       return (void*) (menuItems_ + current_);
     }
@@ -137,22 +123,7 @@ class DinerEnumerator : public Enumerator {
  private:
 };
 
-class PancakeHouseMenu 
-{
- public:
-  friend class PancakeEnumerator;
-
-  PancakeHouseMenu() 
-  {
-    menuItems.push_back(MenuItem("K&", "scramble", true, 2.99));
-    menuItems.push_back(MenuItem("B&", "waffle", true, 2.32));    
-  };
-
- protected:
-  list<MenuItem> menuItems;
-};
-
-class DinerMenu 
+class DinerMenu : public EnumeratorCreator 
 {
  public:
   static const int MAX_ARRAY = 10; 
@@ -181,12 +152,12 @@ class DinerMenu
     }
   };
 
-  Enumerator* begin() 
+  virtual Enumerator* begin() 
   {
-    return (new DinerEnumerator(&menuItems[0], menuIndex_));
+    return (new DinerEnumerator(&menuItems[0], menuIndex_, 0));
   }
 
-  void* end() 
+  virtual void* end() 
   {
     return nullptr;
   }
@@ -199,9 +170,8 @@ class DinerMenu
 int main() 
 {
   DinerMenu dm;
-  PancakeHouseMenu phm;
   Enumerator* en = dm.begin();
-  for (en; en->current() != dm.end(); en->moveNext()) {
+  for (; en->current() != dm.end(); en->moveNext()) {
     MenuItem* it = static_cast<MenuItem*>(en->current()); 
     cout << it->get_name() << endl;
   }
