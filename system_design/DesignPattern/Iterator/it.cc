@@ -12,13 +12,9 @@ class Enumerator {
     cout << "enumerator" << endl;
   };
   
-  virtual void* begin() = 0;
-
-  virtual void* end() = 0; 
-
   virtual void moveNext() = 0;
 
-  virtual void current() = 0;
+  virtual void* current() = 0;
  
  protected:
 };
@@ -90,22 +86,12 @@ class PancakeEnumerator : public Enumerator {
   {
     cout << "enumerator" << endl;
   };
-  
-  virtual void* begin() {
-    // start point of array
-    return nullptr;
-  };
-
-  virtual void* end() {
-    // end point of array
-    return nullptr;
-  }; 
 
   virtual void moveNext() {
     // move list one 
   };
 
-  virtual void current() {
+  virtual void* current() {
     // return current pointing list member
   };
 
@@ -122,30 +108,30 @@ class DinerEnumerator : public Enumerator {
     cout << "enumerator" << endl;
     menuItems_ = menuItems;
     index_ = index;
+    current_ = 0;
   };
-  
-  virtual void* begin() {
-    // start point of array
-    return (void*) &menuItems_[0];
-  };
-
-  virtual void* end() {
-    // end point of array
-    return nullptr;
-  }; 
 
   virtual void moveNext() {
     // move list one 
+    current_++;
   };
 
-  virtual void current() {
-    // return current pointing list member
+  virtual void* current() {
+    // return current pointing list member;
+    if (current_ < index_) 
+    {
+      return (void*) (menuItems_ + current_);
+    }
+    else 
+    {
+      return nullptr;
+    }
   };
 
  protected:
   MenuItem *menuItems_;
   int index_;
-
+  int current_;
  private:
 };
 
@@ -173,8 +159,8 @@ class DinerMenu
   DinerMenu() 
   {
     menuIndex_ = 0; 
-    MenuItem it1("K", "scramble", true, 2.99);
-    MenuItem it2("B", "waffle", true, 2.32);    
+    MenuItem it1("Dinner[K]", "scramble", true, 2.99);
+    MenuItem it2("Dinner[B]", "waffle", true, 2.32);    
     addItem(it1);
     addItem(it2);
   };
@@ -193,9 +179,16 @@ class DinerMenu
     }
   };
 
-  Enumerator getEnumerator() {
-    return (new DinerEnumerator(&menuItems, menuIndex_));
+  Enumerator* begin() 
+  {
+    return (new DinerEnumerator(&menuItems[0], menuIndex_));
   }
+
+  void* end() 
+  {
+    return nullptr;
+  }
+
  protected:
   MenuItem menuItems[MAX_ARRAY];
   int menuIndex_;
@@ -205,6 +198,10 @@ int main()
 {
   DinerMenu dm;
   PancakeHouseMenu phm;
-
+  Enumerator* en = dm.begin();
+  for (en; en->current() != dm.end(); en->moveNext()) {
+    MenuItem* it = static_cast<MenuItem*>(en->current()); 
+    cout << it->get_name() << endl;
+  }
   return 0;
 }
