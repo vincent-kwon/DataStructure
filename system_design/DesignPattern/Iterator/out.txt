@@ -1,0 +1,39 @@
+it.cc: In copy constructor ‘MenuItem::MenuItem(const MenuItem&)’:
+it.cc:22:26: error: passing ‘const MenuItem’ as ‘this’ argument of ‘std::string MenuItem::get_name()’ discards qualifiers [-fpermissive]
+     name_ = obj.get_name();
+                          ^
+it.cc:23:40: error: passing ‘const MenuItem’ as ‘this’ argument of ‘std::string MenuItem::get_description()’ discards qualifiers [-fpermissive]
+     description_ = obj.get_description();
+                                        ^
+it.cc:24:38: error: passing ‘const MenuItem’ as ‘this’ argument of ‘bool MenuItem::get_vegetarian()’ discards qualifiers [-fpermissive]
+     vegetarian_ = obj.get_vegetarian();
+                                      ^
+it.cc:25:28: error: passing ‘const MenuItem’ as ‘this’ argument of ‘double MenuItem::get_price()’ discards qualifiers [-fpermissive]
+     price_ = obj.get_price();
+                            ^
+it.cc: In member function ‘void MenuItem::operator=(const MenuItem&)’:
+it.cc:29:26: error: passing ‘const MenuItem’ as ‘this’ argument of ‘std::string MenuItem::get_name()’ discards qualifiers [-fpermissive]
+     name_ = obj.get_name();
+                          ^
+it.cc:30:40: error: passing ‘const MenuItem’ as ‘this’ argument of ‘std::string MenuItem::get_description()’ discards qualifiers [-fpermissive]
+     description_ = obj.get_description();
+                                        ^
+it.cc:31:38: error: passing ‘const MenuItem’ as ‘this’ argument of ‘bool MenuItem::get_vegetarian()’ discards qualifiers [-fpermissive]
+     vegetarian_ = obj.get_vegetarian();
+                                      ^
+it.cc:32:28: error: passing ‘const MenuItem’ as ‘this’ argument of ‘double MenuItem::get_price()’ discards qualifiers [-fpermissive]
+     price_ = obj.get_price();
+                            ^
+it.cc: In constructor ‘DinerMenu::DinerMenu()’:
+it.cc:75:3: error: no matching function for call to ‘MenuItem::MenuItem()’
+   {
+   ^
+it.cc:75:3: note: candidates are:
+it.cc:21:3: note: MenuItem::MenuItem(const MenuItem&)
+   MenuItem(const MenuItem& obj) {
+   ^
+it.cc:21:3: note:   candidate expects 1 argument, 0 provided
+it.cc:13:3: note: MenuItem::MenuItem(std::string, std::string, bool, double)
+   MenuItem(string name, string description, bool vegetarian, double price) 
+   ^
+it.cc:13:3: note:   candidate expects 4 arguments, 0 provided
