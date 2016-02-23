@@ -20,6 +20,7 @@ class FlyBehavior {
  public:
   virtual void fly() = 0;
 };
+
 class Duck {
  public:
   void common1() { cout << "[duck] common 1" << endl; };
