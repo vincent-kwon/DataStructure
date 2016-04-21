@@ -26,6 +26,33 @@ int K = 4;
 int box[100] = {0, };
 int sum[100] = {0, };
 
+int getMax(int startIndex, int endIndex) 
+{
+  int ret = 0;
+
+  if (endIndex < 0 || !(startIndex < endIndex))
+    return 0;
+
+  // if selected, then endIndex should matching one
+  int toSearch = sum[endIndex];
+  cout << toSearch << endl;
+  int nextIndex = -1;
+
+  for (int i = endIndex-1; i >= startIndex; i--) 
+  {
+    if (sum[i] == toSearch) {
+      nextIndex = i;      
+      break;
+    }
+  }
+ 
+  if (!(startIndex < nextIndex))
+
+  int maxval =  max (getMax(startIndex, endIndex-1), getMax(startIndex, nextIndex) + 1);
+  cout << "Next Index: " << nextIndex << " for "  << toSearch << " maxval : " << maxval << endl;
+  return maxval;
+}
+
 int main() 
 {
   for (int i = 0; i < N; i++) 
@@ -45,10 +72,10 @@ int main()
   } 
 
   cout << "count: " << count << endl;
-  // print all feasibility
 
-  // print biggest possible
+  int ret = getMax(0, N-1);
   
+  cout << "max: " << ret << endl;
   return 0;
 }
 
