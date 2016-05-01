@@ -13,6 +13,8 @@ using namespace std;
 #define SET_BIT(a,b) ((a) |= (1<<(b)))
 #define GET_BIT(a,b) (((a) & (1<<(b)))>0?1:0)
 #define CLEAR_BIT(a,b) ((a) &= ~(1<<(b)))
+#define TOGGLE_BIT(a,b) if (GET_BIT(a,b) == 1) CLEAR_BIT(a,b); \ 
+                        else SET_BIT(a,b);
 
 char w[200][20]; //is this best?
 int a[26][26] = {0, };
@@ -37,6 +39,13 @@ void dfs(int p, int& visited)
 int main() 
 {
   int test, words;
+  int t = 0;
+  SET_BIT(t,1);
+  SET_BIT(t,2);
+  cout << t << endl;
+  TOGGLE_BIT(t, 1);
+  TOGGLE_BIT(t, 0);
+  cout << t << endl;
 
   cin >> test;
 
