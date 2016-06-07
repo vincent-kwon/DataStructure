@@ -11,6 +11,8 @@ int get(int state, int index) {
 }
 
 int set(int state, int index, int value) {
+//  cout << "set:" << index << "," << value ;
+//  cout << " value : " << (value << (index*2)) << endl;
   return (state & ~(3<<(index*2))) | (value << (index * 2));
 }
 
@@ -39,6 +41,7 @@ int bidir(int disc, int begin, int end) {
     int here = q.front();
     q.pop();
     int top[4] = { -1, -1, -1, -1 };
+    cout << "here: " << here << ", c[here] " << c[here] << endl;
     for (int i = disc-1; i >= 0; i--) {
       top[get(here, i)] = i;
     }
@@ -51,7 +54,7 @@ int bidir(int disc, int begin, int end) {
               c[there] = incr(c[here]);
               q.push(there);
             }
-            else if (sgn(c[there] != sgn(c[here])))
+            else if (sgn(c[there]) != sgn(c[here]))
               return abs(c[there]) + abs(c[here]) - 1;
           }
         }
@@ -94,7 +97,7 @@ int bfs(int disc, int begin, int end) {
 int main() {
   int test;
   cin >> test;
-  while(test-- > 0) {
+  while (test-- > 0) {
     int inputSize[4];
     int inputArray[4][12];
     int outputSize[4];
@@ -111,7 +114,8 @@ int main() {
       for (int j = 0; j < inputSize[pole]; j++) 
       {
         cin >> inputArray[pole][j];
-        beginVal = set(beginVal, inputArray[pole][j], pole);
+        cout << "index: " << inputArray[pole][j] << "," << pole << endl;
+        beginVal = set(beginVal, inputArray[pole][j]-1, pole);
       }
 
     }
@@ -126,7 +130,7 @@ int main() {
       for (int j = 0; j < outputSize[i]; j++) 
       {
         cin >> outputArray[i][j];
-        endVal = set(endVal, outputArray[i][j], i);
+        endVal = set(endVal, outputArray[i][j]-1, i);
       }
     }
     cout << "output " << endVal << endl;
