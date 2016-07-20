@@ -24,22 +24,29 @@ int cache[MAX_CAP][MAX_NUM];
 int pack(int capacity, int index) {
 
   int& ret = cache[capacity][index]; 
+  cout << "pack(" << capacity << "," << index << ") = " << ret << endl;
 
-  if (ret != -1) return ret;
-
+  if (ret != -1) {
+    cout << "HIT: pack(" << capacity << "," << index << ") = " << ret << endl;
+    return ret;
+  }
   // first element
   if (index == 0) {
     if (capacity >= a[index][0]) ret = a[index][1]; // set 
     else ret = 0;
+    
+    cout << "End: pack(" << capacity << "," << index << ") = " << ret << endl;
     return ret;
   }
 
   ret = pack(capacity, index - 1);
 
+  cout << "N pack(" << capacity << "," << index << ") = " << ret << endl;
   // max between selected or not selected
-  if (capacity >= a[index][0]) 
+  if (capacity >= a[index][0]) {
     ret = max(ret, pack(capacity - a[index][0], index - 1) + a[index][1]);
-  
+    cout << "C pack(" << capacity << "," << index << ") = " << ret << endl;
+  }
   return ret;  
 }
 
