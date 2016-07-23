@@ -8,12 +8,29 @@ int right[N];
 #define INT_MIN (1<<31) 
 #define INT_MAX (((unsigned int)(INT_MIN))-1)
 
+// Matrix no count from 1 
+//
+//   0     1     2    3
+// (2,3) (3,6) (6,4) (4,5)
+//
+//
+//
+//      0  1  2  3  4 
+//     
+//  0   0  
+//
+//  1      0 36     
+//
+//  2         0 72
+//
+//  3             0   
+//
+//  4               0
 int p[N+1] = {2, 3, 6, 4, 5};
 
 int m[N][N];
 
 int MatrixChainOrderDP() { // 1 << << n
- 
   int i, j, k, L, q;
   int n = N;
 
