@@ -23,6 +23,7 @@
 using namespace std;
 
 #define N 5 
+#define DFS 
 
 int maze[5][5] = {
   {1, 1, 1, 1, 1,},
@@ -31,6 +32,8 @@ int maze[5][5] = {
   {1, 1, 1, 1, 1,},
   {1, 1, 1, 1, 1,},
 };
+
+int cache[5][5][4];
 
 enum FROM_DIR {
   FROM_LEFT,
@@ -74,7 +77,6 @@ void printPath(list<pair<int, int> > path, list<int> fromPath, list<int> turnCou
 
   for (auto it = path.begin(); it != path.end(); it++, fromIt++, tc++) {
     string dirStr;
-    //cout << "PP:" << *fromIt << endl;
     switch (*fromIt) {
       case FROM_LEFT: dirStr = "FROM LEFT";
                  break;
@@ -97,15 +99,25 @@ void printPath(list<pair<int, int> > path, list<int> fromPath, list<int> turnCou
   cout << "MIN: " << minValue << endl;
 }
 
-void findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path,
+int findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path,
                         set<pair<int, int> > &visited,
                         pair<int, int> &curr, int from_dir, 
                         list<int>& fromPath, list<int>& turnCount) {
 
+
+#ifdef DFS
+  int minResult = 987654321;
+  int myCount = turnCount.back();
+ 
+  if (cache[curr.first][curr.second][from_dir] != -1) {
+    cout << "cached:" << curr.first << "," << curr.second << "," << from_dir << ": "  << cache[curr.first][curr.second][from_dir] << endl; 
+    return cache[curr.first][curr.second][from_dir] + myCount;
+  }
+
   if (curr.first == endPoint.first && curr.second == endPoint.second) 
   {
     printPath(path, fromPath, turnCount);
-    return;
+    return turnCount.back();
   }
 
   for (int i = 0; i < 2; ++i) {
@@ -118,11 +130,12 @@ void findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path
       visited.insert(next);
       path.push_back(next);
       fromPath.push_back(fromDir[from_dir][i]);
-
+      
       if (i == 0) turnCount.push_back(turnCount.back());
       else turnCount.push_back(turnCount.back()+1);
- 
-      findPathInMazeUtil(endPoint, path, visited, next, fromDir[from_dir][i], fromPath, turnCount);
+      
+      int tmp = findPathInMazeUtil(endPoint, path, visited, next, fromDir[from_dir][i], fromPath, turnCount);
+      minResult = min(minResult, tmp);
       path.pop_back(); 
       fromPath.pop_back();
       turnCount.pop_back();
@@ -130,10 +143,20 @@ void findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path
     }
     else {
       if (n  == 0) {
-        //printPath(path, );
       }
     }
   }
+
+  cache[curr.first][curr.second][from_dir] = minResult - myCount; 
+  return minResult;
+#elif BFS
+  // queue 
+  // insert start
+  // while (!queue.empty()) {
+  //   pop front
+  //
+  // }
+#endif
 }
 
 void findPathInMaze() {
@@ -143,6 +166,11 @@ void findPathInMaze() {
   set<pair<int, int> > visited;
   int x = N-1;
   int y = N-1;
+  for (int i = 0 ; i < N; i++) 
+    for (int j = 0; j < N; j++)
+      for (int k = 0; k < 4; k++)
+         cache[i][j][k] = -1;
+
   pair<int, int> pt = make_pair(x,y);
   visited.insert(pt);
   path.push_back(pt); // insert to path
