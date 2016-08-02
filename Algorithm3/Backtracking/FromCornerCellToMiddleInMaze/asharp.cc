@@ -19,11 +19,11 @@
 #include <iostream>
 #include <list>
 #include <set>
+#include <queue>
 
 using namespace std;
 
 #define N 5 
-#define DFS 
 
 int maze[5][5] = {
   {1, 1, 1, 1, 1,},
@@ -34,6 +34,8 @@ int maze[5][5] = {
 };
 
 int cache[5][5][4];
+
+int cacheBFS[5][5][4] = {0, }; // if > 0 then it means visited
 
 enum FROM_DIR {
   FROM_LEFT,
@@ -63,10 +65,23 @@ int fromDir[4][2] = {
   {FROM_BOTTOM, FROM_LEFT }, 
 };
 
+typedef struct _NODE {
+  int row;
+  int col;
+  int dir;
+  int cnt;
+} NODE;
+
 bool isValid(set<pair<int, int> > visited, pair<int, int> pt) {
   return (pt.first >= 0) && (pt.first < N) &&
          (pt.second >= 0) && (pt.second < N) &&
          (visited.find(pt) == visited.end());
+}
+
+bool isValid(int first, int second, int dir) {
+  return (first >= 0) && (first < N) &&
+         (second >= 0) && (second < N) &&
+         (cacheBFS[first][second][dir] == 0);
 }
 
 int minValue = 987654321;
@@ -105,7 +120,6 @@ int findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path,
                         list<int>& fromPath, list<int>& turnCount) {
 
 
-#ifdef DFS
   int minResult = 987654321;
   int myCount = turnCount.back();
  
@@ -149,14 +163,6 @@ int findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path,
 
   cache[curr.first][curr.second][from_dir] = minResult - myCount; 
   return minResult;
-#elif BFS
-  // queue 
-  // insert start
-  // while (!queue.empty()) {
-  //   pop front
-  //
-  // }
-#endif
 }
 
 void findPathInMaze() {
@@ -184,6 +190,44 @@ void findPathInMaze() {
   visited.erase(pt); // for next corner
 }
 
+void findPathBFSInMaze() {
+  NODE startNode = {N-1,N-1, FROM_RIGHT, 0};  
+  NODE dest = { N/2, N/2, 0, 0 };
+  queue<NODE> queue;
+  cacheBFS[N-1][N-1][FROM_RIGHT] = 1;
+  queue.push(startNode);
+  int minValue = 987654321;
+ 
+  while (!queue.empty()) {
+    NODE curr = queue.front();
+    queue.pop();
+    //cout << "Visit: (" << curr.row << "," << curr.col << "," << curr.dir << ")" << endl;
+    if (curr.row == dest.row && curr.col == dest.col) {
+      cout << "Current Min: " << curr.cnt << endl;
+      minValue = min(minValue, curr.cnt);
+      cout << "New Min: " << minValue << endl;
+      continue;
+    }
+
+    // next possible node
+    for (int i = 0; i < 2; ++i) {
+      int n = maze[curr.row][curr.col];
+      int x = curr.row + row[curr.dir][i] * n;
+      int y = curr.col + col[curr.dir][i] * n;
+      int d = fromDir[curr.dir][i];
+      int c = (i==1? curr.cnt+1 : curr.cnt);
+      
+      // check cache and add if not visited
+      if (isValid(x,y,d)) {
+        cacheBFS[x][y][d]++;
+        NODE nextNode = { x, y, d, c };
+        queue.push(nextNode);
+      }
+    }
+  }
+}
+
 int main() {
-  findPathInMaze();
+  //findPathInMaze();
+  findPathBFSInMaze();
 }
