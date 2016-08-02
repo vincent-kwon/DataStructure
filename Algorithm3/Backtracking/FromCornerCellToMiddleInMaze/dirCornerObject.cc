@@ -81,11 +81,12 @@ bool isValid(set<pair<int, int> > visited, pair<int, int> pt) {
          (visited.find(pt) == visited.end());
 }
 
-void printPath(list<pair<int, int> > path, list<int> fromPath) {
+void printPath(list<pair<int, int> > path, list<int> fromPath, list<int> turnCount) {
 
   auto fromIt = fromPath.begin();
+  auto tc = turnCount.begin();
 
-  for (auto it = path.begin(); it != path.end(); it++, fromIt++) {
+  for (auto it = path.begin(); it != path.end(); it++, fromIt++, tc++) {
     string dirStr;
     //cout << "PP:" << *fromIt << endl;
     switch (*fromIt) {
@@ -98,7 +99,7 @@ void printPath(list<pair<int, int> > path, list<int> fromPath) {
       case FROM_BOTTOM: dirStr = "FROM BOTTOM";
                  break;
     }
-    cout << "DIR: " << dirStr <<" (" << it->first << " , " << it->second << ") -> " << endl;
+    cout << "DIR: " << dirStr <<" (" << it->first << " , " << it->second << ") -> " << *tc << endl;
   }
 
   cout << "MID" << endl;
@@ -107,11 +108,11 @@ void printPath(list<pair<int, int> > path, list<int> fromPath) {
 void findPathInMazeUtil(list<pair<int, int> > &path,
                         set<pair<int, int> > &visited,
                         pair<int, int> &curr, int from_dir, 
-                        list<int>& fromPath) {
+                        list<int>& fromPath, list<int>& turnCount) {
 
   if (curr.first == N/2 && curr.second == N/2) 
   {
-    printPath(path, fromPath);
+    printPath(path, fromPath, turnCount);
     return;
   }
 
@@ -125,9 +126,14 @@ void findPathInMazeUtil(list<pair<int, int> > &path,
       visited.insert(next);
       path.push_back(next);
       fromPath.push_back(fromDir[from_dir][i]);
-      findPathInMazeUtil(path, visited, next, fromDir[from_dir][i], fromPath);
+
+      if (i == 0) turnCount.push_back(turnCount.back());
+      else turnCount.push_back(turnCount.back()+1);
+ 
+      findPathInMazeUtil(path, visited, next, fromDir[from_dir][i], fromPath, turnCount);
       path.pop_back(); 
       fromPath.pop_back();
+      turnCount.pop_back();
       visited.erase(next);
     }
     else {
@@ -141,6 +147,7 @@ void findPathInMazeUtil(list<pair<int, int> > &path,
 void findPathInMaze() {
   list<pair<int, int> > path;
   list<int> fromPath;
+  list<int> turnCount; 
   set<pair<int, int> > visited;
   int x = 0;
   int y = 0;
@@ -148,9 +155,11 @@ void findPathInMaze() {
   visited.insert(pt);
   path.push_back(pt); // insert to path
   fromPath.push_back(FROM_LEFT);
-  findPathInMazeUtil(path, visited, pt, FROM_LEFT, fromPath); 
+  turnCount.push_back(0);
+  findPathInMazeUtil(path, visited, pt, FROM_LEFT, fromPath, turnCount); 
   path.pop_back();    // remove from path  
   fromPath.pop_back();
+  turnCount.pop_back();
   visited.erase(pt); // for next corner
 }
 
