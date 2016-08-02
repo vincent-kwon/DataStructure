@@ -33,9 +33,18 @@ int maze[5][5] = {
   {1, 1, 1, 1, 1,},
 };
 
+int h[5][5] = { 0, };
+int f[5][5] = { 0, }; 
+
 int cache[5][5][4];
 
 int cacheBFS[5][5][4] = {0, }; // if > 0 then it means visited
+
+int points[3][2] = {
+ {0,0},
+ {4,3},
+ {1,4}
+};
 
 enum FROM_DIR {
   FROM_LEFT,
@@ -70,7 +79,13 @@ typedef struct _NODE {
   int col;
   int dir;
   int cnt;
+  int fval;
 } NODE;
+
+typedef struct _RESULT {
+  int cnt;
+  int dir;
+} RESULT;
 
 bool isValid(set<pair<int, int> > visited, pair<int, int> pt) {
   return (pt.first >= 0) && (pt.first < N) &&
@@ -119,7 +134,6 @@ int findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path,
                         pair<int, int> &curr, int from_dir, 
                         list<int>& fromPath, list<int>& turnCount) {
 
-
   int minResult = 987654321;
   int myCount = turnCount.back();
  
@@ -166,6 +180,7 @@ int findPathInMazeUtil(std::pair<int,int> endPoint, list<pair<int, int> > &path,
 }
 
 void findPathInMaze() {
+  cout << "DFS start..." << endl;
   list<pair<int, int> > path;
   list<int> fromPath;
   list<int> turnCount; 
@@ -188,24 +203,39 @@ void findPathInMaze() {
   fromPath.pop_back();
   turnCount.pop_back();
   visited.erase(pt); // for next corner
+  cout << "DFS end... " << endl;
 }
 
-void findPathBFSInMaze() {
-  NODE startNode = {N-1,N-1, FROM_RIGHT, 0};  
-  NODE dest = { N/2, N/2, 0, 0 };
+RESULT findPathBFSInMaze(int startPoint, int endPoint, int startDir, int startCnt) {
+
+  RESULT resultVal;
+
+  for (int i = 0; i < N; i++) 
+    for (int j = 0; j < N; j++) 
+      for (int k = 0; k < 4; k++) 
+        cacheBFS[i][j][k] = 0;
+ 
+  cout << "BFS (" << points[startPoint][0] <<  "," << points[startPoint][1] << ") to (" << points[endPoint][0] 
+       <<  "," << points[endPoint][1] << ") " << endl;
+  NODE startNode = {points[startPoint][0], points[startPoint][1], startDir, 0};  
+  NODE dest = { points[endPoint][0], points[endPoint][1], 0, 0 };
   queue<NODE> queue;
-  cacheBFS[N-1][N-1][FROM_RIGHT] = 1;
+  cacheBFS[points[startPoint][0]][points[startPoint][1]][startDir] = 1;
   queue.push(startNode);
   int minValue = 987654321;
- 
+  int minDir = -1;
+
   while (!queue.empty()) {
     NODE curr = queue.front();
     queue.pop();
     //cout << "Visit: (" << curr.row << "," << curr.col << "," << curr.dir << ")" << endl;
     if (curr.row == dest.row && curr.col == dest.col) {
-      cout << "Current Min: " << curr.cnt << endl;
-      minValue = min(minValue, curr.cnt);
-      cout << "New Min: " << minValue << endl;
+      //cout << "Current Min: " << curr.cnt << endl;
+      if (minValue > curr.cnt) {
+        minValue = curr.cnt;
+        minDir = curr.dir;
+        cout << "New Min: " << minValue << " with direction " << minDir << endl;
+      }
       continue;
     }
 
@@ -225,9 +255,88 @@ void findPathBFSInMaze() {
       }
     }
   }
+  cout << "BFS end .. " << endl;
+
+  resultVal.cnt = startCnt + minValue;
+  resultVal.dir = minDir;
+  return resultVal;
+}
+
+void findASharpInMaze() {
+  NODE startNode = {N-1,N-1, FROM_RIGHT, 0};  
+  NODE dest = { N/2, N/2, 0, 0 };
+  int minValue = 987654321;
+
+  list<NODE> closeList;
+  list<NODE> openList;
+
+  cout << "A# start ... " << endl;
+  
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      h[i][j] = abs(i -  dest.row) + abs(j - dest.col);
+      for (int k = 0; k < 4; k++) 
+        cacheBFS[i][j][k] = 0;
+    }
+  }
+ 
+  startNode.fval = f[startNode.row][startNode.col] = h[startNode.row][startNode.col]; // ignore G value since all same
+
+  openList.push_back(startNode);
+
+  while (!openList.empty()) {
+    int nextMin = 987654321;
+    list<NODE>::iterator nextNode; 
+
+    for (auto itor = openList.begin(); itor != openList.end(); itor++) {
+      if (itor->cnt < nextMin) {
+        nextMin = itor->cnt;
+        nextNode = itor;     
+      }
+    }
+
+    cout << "Select: (" <<  nextNode->row << "," << nextNode->col << "," << nextNode->dir << "," << nextNode->cnt 
+         << "," << nextNode->fval << ")" << endl;
+
+    NODE curr = { nextNode->row, nextNode->col, nextNode->dir, nextNode->cnt, nextNode->fval };
+    openList.erase(nextNode);
+
+    for (int i = 0; i < 2; ++i) {
+      int n = maze[curr.row][curr.col];
+      int x = curr.row + row[curr.dir][i] * n;
+      int y = curr.col + col[curr.dir][i] * n;
+      int d = fromDir[curr.dir][i];
+      int c = (i==1? curr.cnt+1 : curr.cnt);
+      int fv = h[x][y];
+      // check cache and add if not visited
+      if (isValid(x,y,d)) {
+        if (x == dest.row && y == dest.col) {
+          minValue = min(minValue, c);
+          cout << "curr min: " << c << "," << "real min: " << minValue << endl;            
+        } 
+        else {
+          cacheBFS[x][y][d]++;
+          NODE nextNode = { x, y, d, c, fv};
+          openList.push_back(nextNode);
+        }
+      }
+    }
+
+    closeList.push_back(curr);
+  }
+  cout << "A# end...." << endl;
 }
 
 int main() {
   //findPathInMaze();
-  findPathBFSInMaze();
+  RESULT resultVal;
+  resultVal.dir = FROM_LEFT;
+  resultVal.cnt = 0;
+
+  for (int i = 0; i < 2; i++) {
+     resultVal = findPathBFSInMaze(i, i+1, resultVal.dir, resultVal.cnt);
+  }
+
+  cout << "R: " << resultVal.cnt << " from " << resultVal.dir << endl;
+  //findASharpInMaze();
 }
