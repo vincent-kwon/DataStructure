@@ -69,16 +69,25 @@ using namespace std;
 #define MAX_WORDS 10
 
 int words, tests, given;
-double b[MAX_WORDS];
-double n[MAX_WORDS][MAX_WORDS];
-double r[MAX_WORDS][MAX_WORDS];
+double b[MAX_WORDS+1];
+double n[MAX_WORDS+1][MAX_WORDS+1];
+double r[MAX_WORDS+1][MAX_WORDS+1];
 bool bruteForce = false;
-string wordStr[MAX_WORDS];
-string p[MAX_WORDS];
+string wordStr[MAX_WORDS+1];
+string p[MAX_WORDS+1];
 double gMax = 0;
+int choice[102][502];
+double cache[102][502];
 
 int getIndex(string s) {
   for (int i = 0; i < words; i++) {
+    if (wordStr[i] == s) return i;
+  }
+  return -1;
+}
+
+int getIndex2(string s) {
+  for (int i = 1; i <= words; i++) {
     if (wordStr[i] == s) return i;
   }
   return -1;
@@ -119,39 +128,110 @@ double getMaxStrBF(int index, int maxIndex, vector<string> v, double accum) {
   return 1.0;
 }
 
+string corpus[501];
+
+string reconstruct(int segment, int previousMatch) { // seg 1, 2, 3, 4
+  int choose = choice[segment][previousMatch];
+  string ret = wordStr[choose];
+  cout << "seg: " << segment << "choose: " << choose << ", ret: " << ret << ", prevMatch : " << previousMatch << ", given: " << given << endl;
+  if (segment < given)
+    ret = ret + " " + reconstruct(segment+1, choose);
+  return ret;
+}
+
+double recognize(int segment, int previousMatch) {
+  //cout << "rec: " << segment << "," << previousMatch << "," << given << endl;
+  if (segment == (given+1)) return 0;
+
+  double &ret = cache[segment][previousMatch];
+
+  if (ret != 1.0) {
+    cout << "cached: " << segment << "," << previousMatch << endl;
+    return ret;
+  }
+
+  ret = -1e200;
+
+  int& choose = choice[segment][previousMatch]; // for reference variable set
+
+  for (int thisMatch = 1; thisMatch <= words; ++thisMatch) {
+    double cand = n[previousMatch][thisMatch] // segment 1, previousMatch I 0
+                 + r[thisMatch][getIndex2(p[segment])]   // ok 
+                 + recognize(segment+1, thisMatch); // 1,I or 1,am or 1,a or 1,boy or 1,buy <== index current no
+
+    if (ret < cand) {
+      ret = cand;
+      choose = thisMatch; // this saves max value for segment, prevMatch. For example 1-I, choose[1][0] = next value;   
+      cout << "[cand] " << cand << ", [seg] " << segment << ", [c] " << choose << ", [p] " << previousMatch << endl;
+    }
+  }
+  return ret;
+}
+
 int main() {   
   cin >> words;
   cin >> tests;
 
-  for (int i = 0; i < words; i++)
-    cin >> wordStr[i];
-
-  for (int i = 0; i < words; i++)
-    cin >> b[i];
-
-  for (int i = 0; i < words; i++)
-    for (int j = 0; j < words; j++) 
-      cin >> n[i][j];
-
-  for (int i = 0; i < words; i++)
-    for (int j = 0; j < words; j++) 
-      cin >> r[i][j];
-
-  cin >> given; 
-
-  for (int i = 0; i < given; i++)
-  {
-    cin >> p[i];
-    //cout << str[i];
-  }
-
   if (bruteForce) {
+    for (int i = 0; i < words; i++)
+      cin >> wordStr[i];
+
+    for (int i = 0; i < words; i++)
+      cin >> b[i];
+
+    for (int i = 0; i < words; i++)
+      for (int j = 0; j < words; j++) 
+        cin >> n[i][j];
+
+    for (int i = 0; i < words; i++)
+      for (int j = 0; j < words; j++) 
+        cin >> r[i][j];
+  
+    cin >> given; 
+
+    for (int i = 0; i < given; i++)
+      cin >> p[i];
+
     vector<string> v;
-    getMaxStrBF(0,given, v, 1.0);
+    getMaxStrBF(0, given, v, 1.0);
+  }
+  else {
+    for (int i = 0; i < 102; i++) {
+      for (int j = 0; j < 502; j++) {
+        cache[i][j] = 1;
+        choice[i][j] = -1;
+      }
+    }
+ 
+    for (int i = 1; i <= words; i++) {
+      cin >> wordStr[i];
+    }
+
+    for (int i = 1; i <= words; i++)
+      cin >> b[i];
+
+    for (int i = 1; i <= words; i++)
+      for (int j = 1; j <= words; j++) 
+        cin >> n[i][j];
+
+    for (int i = 1; i <= words; i++) 
+      n[0][i] = b[i]; // imaginary word 0-i probability
+
+    for (int i = 1; i <= words; i++)
+      for (int j = 1; j <= words; j++) 
+        cin >> r[i][j];
+    
+    cin >> given; 
+
+    for (int i = 1; i <= given; i++) {
+      cin >> p[i];
+      //cout << p[i];
+    }
+     
+    double r = recognize(1, 0);
+    string result = reconstruct(1,0);
+    cout << result << endl;
   }
 
-  vector<string> results;
-  
-  //cout << "r: " << results << endl;
   return 0;
 }
